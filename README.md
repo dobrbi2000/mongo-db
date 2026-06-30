@@ -118,3 +118,103 @@ src/main/java/com/example/taskmanager
 ├── TaskManagerApp.java
 └── TaskSeederApp.java
 ```
+
+# Task 1 — Backend Database Migration (SQL → MongoDB)
+
+## Overview
+
+This task demonstrates migration of an existing backend application from a relational SQL database to **MongoDB**.
+
+The migration is implemented on top of the **MongoDB Task Manager** application and includes:
+- SQL data source  
+- MongoDB target database  
+- Data model redesign  
+- Data migration job  
+- Aggregation query using MongoDB  
+
+---
+
+## Database Technologies
+
+### Source Database (SQL)
+
+- **Database:** H2 (embedded)  
+- **Access:** JDBC  
+- **Purpose:** Simulated legacy relational database  
+
+### Target Database (NoSQL)
+
+- **Database:** MongoDB  
+-- **Driver:** MongoDB Java Driver (Sync)  
+- **Data model:** Document-oriented  
+
+---
+
+## SQL Data Model
+
+### `tasks` table
+
+| Column      | Type        |
+|-------------|-------------|
+| id          | BIGINT (PK) |
+| created_at  | TIMESTAMP   |
+| deadline    | TIMESTAMP   |
+| name        | VARCHAR     |
+| description | VARCHAR     |
+| category    | VARCHAR     |
+
+### `subtasks` table
+
+| Column      | Type                   |
+|-------------|------------------------|
+| id          | BIGINT (PK)            |
+| task_id     | BIGINT (FK → tasks.id) |
+| name        | VARCHAR                |
+| description | VARCHAR                |
+
+The SQL schema represents a normalized relational structure with a **one-to-many** relationship between tasks and subtasks.
+
+---
+
+## MongoDB Data Model
+
+Each task is stored as a **single MongoDB document** with **embedded subtasks**.
+
+```json
+{
+  "_id": ObjectId("..."),
+  "createdAt": ISODate("2026-06-29T10:00:00Z"),
+  "deadline": ISODate("2026-07-02T18:00:00Z"),
+  "name": "Prepare MongoDB project",
+  "description": "Create DAO layer and console menu",
+  "category": "study",
+  "subtasks": [
+    {
+      "name": "Write DAO",
+      "description": "Implement CRUD operations"
+    }
+  ]
+}
+```
+## Example Output
+
+```text
+Aggregation result: tasks grouped by category
+{"_id":"work","taskCount":2}
+{"_id":"study","taskCount":2}
+{"_id":"home","taskCount":1}
+```
+
+## Project Structure
+
+```text
+src/main/java/com/example/taskmanager
+├── config
+│   ├── MongoConnectionFactory.java
+│   └── SqlConnectionFactory.java
+├── dao
+│   ├── TaskDao.java
+│   └── SqlTaskReaderDao.java
+├── migration
+│   └── SqlToMongoMigrationApp.java
+```

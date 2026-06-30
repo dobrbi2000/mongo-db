@@ -1,3 +1,4 @@
+com\example\taskmanager\config\SqlConnectionFactory.class
 com\example\taskmanager\model\Subtask.class
 com\example\taskmanager\dao\TaskDao.class
 com\example\taskmanager\model\Task.class
@@ -5,3 +6,5 @@ com\example\taskmanager\mapper\TaskMapper.class
 com\example\taskmanager\TaskSeederApp.class
 com\example\taskmanager\config\MongoConnectionFactory.class
 com\example\taskmanager\TaskManagerApp.class
+com\example\taskmanager\migration\SqlToMongoMigrationApp.class
+com\example\taskmanager\dao\SqlTaskReaderDao.class

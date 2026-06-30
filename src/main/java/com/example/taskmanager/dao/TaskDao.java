@@ -201,4 +201,15 @@ public class TaskDao {
         return Pattern.compile("\\b" + Pattern.quote(word) + "\\b", Pattern.CASE_INSENSITIVE);
     }
 
+    // TASK 1
+    public List<Document> countTasksByCategory() {
+        List<Bson> pipeline = List.of(
+                new Document("$group",
+                        new Document("_id", "$category")
+                                .append("taskCount", new Document("$sum", 1))),
+                new Document("$sort", new Document("taskCount", -1)));
+
+        return taskCollection.aggregate(pipeline).into(new ArrayList<>());
+    }
+
 }
